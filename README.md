@@ -1,7 +1,7 @@
 # UkrSat-moneychecker
 Easy tool which monitoring your balance in account of Internet Provider "УкрСат"
 
-Installation
+# Installation
 python3 -m pip install -r requirements.txt
-Run
+# Run
 python stat.py

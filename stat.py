@@ -8,10 +8,11 @@ import threading
 import os
 import sys
 import time
-import ctypes   
+import ctypes
+import signal   
 from tkinter import * 
 
-from multiprocessing import Process
+import multiprocessing as mp
 def Check():
     
 
@@ -19,7 +20,7 @@ def Check():
     
     
     s = requests.Session()
-    r = s.post('http://stat.ukrsat.mk.ua/login.php', data = {'user':'Input login here', 'password':'and password'})
+    r = s.post('http://stat.ukrsat.mk.ua/login.php', data = {'user':'globus12', 'password':'fAzvawZ5g'})
     r = s.get('http://stat.ukrsat.mk.ua/index.php')
 
     b=bs4.BeautifulSoup(r.text,'lxml')
@@ -37,13 +38,22 @@ def alert():
         while True:
             playsound('alarm.mp3')
     
-def UI():
+
+def on_closing():
+    pid=os.getpid()
+    os.kill(pid, signal.CTRL_C_EVENT)
+
+if __name__ == '__main__':
+    
     Check()
     result=Check()
     root=Tk()
     root.title("Stat")
     root.configure(background='gray')
-
+    
+    p1=mp.Process(target=alert)
+    p1.start()
+    
     windowWidth = root.winfo_reqwidth()
     windowHeight = root.winfo_reqheight()
     positionRight = int(root.winfo_screenwidth()/2 - windowWidth/2)
@@ -60,9 +70,7 @@ def UI():
     label1.place(relx=0.3, rely=0.5)
     label2.place(relx=0.55, rely=0.5)
     label3.place(relx=0.3,rely=0.1)
-    button = Button(root, text="Выйти", fg="#eee",bg="#333",command=sys.exit)
-    root.overrideredirect(1)
-    button.place(relx=0.3,rely=0.8) 
+    
     
     if result < 10:
         
@@ -71,12 +79,7 @@ def UI():
     else: 
         label2.config(bg="green")
         
-    
+    root.protocol("WM_DELETE_WINDOW",on_closing )
     root.mainloop()
 
-if __name__ == '__main__':
-    p1=Process(target=alert)
-    p1.start()
-    p2=Process(target=UI)
-    p2.start()
-
+    
